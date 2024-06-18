@@ -3,14 +3,8 @@ pipeline {
 
     environment {
 //      DOCKER_IMAGE = "mannanrawat/devops-automation:2.0"
-        //DOCKER_IMAGE = "mannanrawat/devops-automation:${env.BUILD_ID.replaceAll('[^a-zA-Z0-9]', '_')}"
+        DOCKER_IMAGE = "mannanrawat/devops-automation:${env.BUILD_ID.replaceAll('[^a-zA-Z0-9]', '_')}"
 
-        // Sanitize env.BUILD_ID to match Docker image name requirements
-        def sanitizedBuildId = env.BUILD_ID.replaceAll(/[^a-zA-Z0-9._-]/, '_')
-        DOCKER_IMAGE = "mananrawat788/devops-automation:${sanitizedBuildId}"
-
-
-        
         DOCKERHUB_USERNAME = "mananrawat788@gmail.com"
         DOCKERHUB_PASSWORD = "docker12@M"
     }
@@ -37,11 +31,9 @@ pipeline {
                     sh "echo ${DOCKERHUB_PASSWORD} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin"
 
                     // Push the image
-                    // docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push()
-                    // docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push('latest')
-                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
-                        docker.image(DOCKER_IMAGE).push()
-                        docker.image(DOCKER_IMAGE).push('latest')
+                    docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push()
+                    docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push('latest')
+                    
                 }
             }
         }
