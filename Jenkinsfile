@@ -3,6 +3,8 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "yourdockerhubusername/yourapp"
+        DOCKERHUB_USERNAME = "mananrawat788@gmail.com"
+        DOCKERHUB_PASSWORD = "docker12@M"
     }
 
     stages {
@@ -23,10 +25,12 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
-                        docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push()
-                        docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push('latest')
-                    }
+                    // Login to Docker Hub
+                    sh "echo ${DOCKERHUB_PASSWORD} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin"
+
+                    // Push the image
+                    docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push()
+                    docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push('latest')
                 }
             }
         }
