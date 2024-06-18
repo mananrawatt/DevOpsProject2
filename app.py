@@ -5,6 +5,7 @@ from PIL import Image
 from streamlit_option_menu import option_menu
 import kubernetes_details  # Import functions from the new file
 import jenkins_status
+from kubernetes_details import load_kubernetes_config, get_pod_logs, describe_pod, describe_node
 import logging
 import login  # Import the login page
 from send_email import send_email  # Import the send_email function
@@ -181,41 +182,133 @@ else:
     if selected == "K8s":
         st.title(f"You've selected {selected}")
 
-        # Kubernetes details
-        st.header("Kubernetes Details")
-        option = st.selectbox("Select an option", ["Get Pod Logs", "Describe Pod", "Describe Node"])
+        # Load Kubernetes configuration
+        load_kubernetes_config()
 
-        namespace = st.text_input("Enter Namespace", value="default")
+        # Dropdown menu to select action
+        selected_action = st.selectbox("Select Action",
+                                       [ "Get Pod Logs", "Describe Pod", "Describe Node"])
 
-        if option == "Get Pod Logs":
-            pod_name = st.text_input("Enter Pod Name")
+        # Default namespace
+        namespace = "default"
+
+        # Handle actions based on selection
+        if selected_action == "Get Pod Logs":
+            st.subheader("Pod Logs")
+            pod_name_input = st.text_input("Enter Pod Name:")
             if st.button("Get Logs"):
-                if pod_name:
-                    with st.spinner('Fetching logs...'):
-                        logs = kubernetes_details.get_pod_logs(pod_name, namespace)
-                    st.text_area("Logs", logs, height=300)
+                if pod_name_input:
+                    pod_logs = get_pod_logs(pod_name_input, namespace=namespace)
+                    if pod_logs.startswith("Error:"):
+                        st.error(pod_logs)
+                    else:
+                        st.code(pod_logs)
                 else:
-                    st.error("Please enter a pod name")
+                    st.warning("Please enter a Pod name.")
 
-        elif option == "Describe Pod":
-            pod_name = st.text_input("Enter Pod Name")
+        elif selected_action == "Describe Pod":
+            st.subheader("Describe Pod")
+            pod_name_desc = st.text_input("Enter Pod Name:")
             if st.button("Describe Pod"):
-                if pod_name:
-                    with st.spinner('Fetching pod description...'):
-                        description = kubernetes_details.describe_pod(pod_name, namespace)
-                    st.text_area("Pod Description", description, height=300)
+                if pod_name_desc:
+                    pod_description = describe_pod(pod_name_desc, namespace=namespace)
+                    if pod_description.startswith("Error:"):
+                        st.error(pod_description)
+                    else:
+                        st.code(pod_description)
                 else:
-                    st.error("Please enter a pod name")
+                    st.warning("Please enter a Pod name.")
 
-        elif option == "Describe Node":
-            node_name = st.text_input("Enter Node Name")
+        elif selected_action == "Describe Node":
+            st.subheader("Describe Node")
+            node_name = st.text_input("Enter Node Name:")
             if st.button("Describe Node"):
                 if node_name:
-                    with st.spinner('Fetching node description...'):
-                        description = kubernetes_details.describe_node(node_name)
-                    st.text_area("Node Description", description, height=300)
+                    node_description = describe_node(node_name)
+                    if node_description.startswith("Error:"):
+                        st.error(node_description)
+                    else:
+                        st.code(node_description)
                 else:
-                    st.error("Please enter a node name")
+                    st.warning("Please enter a Node name.")
+        # Kubernetes details
+
+        # st.subheader("Pod Logs")
+        # pod_name_input = st.text_input("Enter Pod Name:")
+        # if st.button("Get Pod Logs"):
+        #     if pod_name_input:
+        #         pod_logs = get_pod_logs(pod_name_input)
+        #         if pod_logs.startswith("Error:"):
+        #             st.error(pod_logs)
+        #         else:
+        #             st.code(pod_logs)
+        #     else:
+        #         st.warning("Please enter a Pod name.")
+        #
+        # # Describe Pod
+        # st.subheader("Describe Pod")
+        # pod_name_desc = st.text_input("Enter Pod Name:", key="pod_name_desc_input")
+        # if st.button("Describe Pod"):
+        #     if pod_name_desc:
+        #         pod_description = describe_pod(pod_name_desc)
+        #         if pod_description.startswith("Error:"):
+        #             st.error(pod_description)
+        #         else:
+        #             st.code(pod_description)
+        #     else:
+        #         st.warning("Please enter a Pod name.")
+        #
+        # # Describe Node
+        # st.subheader("Describe Node")
+        # node_name = st.text_input("Enter Node Name:", key="node_name_input")
+        # if st.button("Describe Node"):
+        #     if node_name:
+        #         node_description = describe_node(node_name)
+        #         if node_description.startswith("Error:"):
+        #             st.error(node_description)
+        #         else:
+        #             st.code(node_description)
+        #     else:
+        #         st.warning("Please enter a Node name.")
+
+    # if selected == "K8s":
+    #     st.title(f"You've selected {selected}")
+    #
+    #     # Kubernetes details
+    #     st.header("Kubernetes Details")
+    #     option = st.selectbox("Select an option", ["Get Pod Logs", "Describe Pod", "Describe Node"])
+    #
+    #     namespace = st.text_input("Enter Namespace", value="default")
+    #
+    #     if option == "Get Pod Logs":
+    #         pod_name = st.text_input("Enter Pod Name")
+    #         if st.button("Get Logs"):
+    #             if pod_name:
+    #                 with st.spinner('Fetching logs...'):
+    #                     logs = kubernetes_details.get_pod_logs(pod_name, namespace)
+    #                 st.text_area("Logs", logs, height=300)
+    #             else:
+    #                 st.error("Please enter a pod name")
+    #
+    #     elif option == "Describe Pod":
+    #         pod_name = st.text_input("Enter Pod Name")
+    #         if st.button("Describe Pod"):
+    #             if pod_name:
+    #                 with st.spinner('Fetching pod description...'):
+    #                     description = kubernetes_details.describe_pod(pod_name, namespace)
+    #                 st.text_area("Pod Description", description, height=300)
+    #             else:
+    #                 st.error("Please enter a pod name")
+    #
+    #     elif option == "Describe Node":
+    #         node_name = st.text_input("Enter Node Name")
+    #         if st.button("Describe Node"):
+    #             if node_name:
+    #                 with st.spinner('Fetching node description...'):
+    #                     description = kubernetes_details.describe_node(node_name)
+    #                 st.text_area("Node Description", description, height=300)
+    #             else:
+    #                 st.error("Please enter a node name")
 
     # #MAIL
     # with st.container():

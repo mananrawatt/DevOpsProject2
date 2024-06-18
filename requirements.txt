@@ -1,0 +1,6 @@
+streamlit
+streamlit-lottie
+streamlit-option-menu
+streamlit
+streamlit-lottie
+streamlit-option-menu
