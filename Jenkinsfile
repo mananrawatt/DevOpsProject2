@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "yourdockerhubusername/yourapp"
+        DOCKER_IMAGE = "mannanrawat/devops-automation"
         DOCKERHUB_USERNAME = "mananrawat788@gmail.com"
         DOCKERHUB_PASSWORD = "docker12@M"
     }
