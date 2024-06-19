@@ -61,7 +61,6 @@ pipeline {
                 script {
                     withKubeConfig([credentialsId: 'MINIKUBE_KUBECONFIG_CREDENTIALS']) {
                         sh 'kubectl apply -f k8s/deployment.yaml'
-                    )
                 }
             }
         }
