@@ -10,6 +10,8 @@ pipeline {
 
         DOCKERHUB_USERNAME = "mananrawat788@gmail.com"
         DOCKERHUB_PASSWORD = "docker12@M"
+        
+        MINIKUBE_KUBECONFIG_CREDENTIALS = credentials('minikube-kubeconfig')
     }
 
     stages {
@@ -48,12 +50,17 @@ pipeline {
             }
         }
 
-        stage('Deploy to Kubernetes') {
+        // stage('Deploy to Kubernetes') {
+        //     steps {
+        //         script {
+        //             kubernetesDeploy(
+        //             configs: 'k8s/deployment.yaml',
+        //             kubeconfigId: 'kubeconfig'
+        stage('Deploy to Minikube') {
             steps {
                 script {
-                    kubernetesDeploy(
-                    configs: 'k8s/deployment.yaml',
-                    kubeconfigId: 'kubeconfig'
+                    withKubeConfig([credentialsId: 'MINIKUBE_KUBECONFIG_CREDENTIALS']) {
+                        sh 'kubectl apply -f k8s/deployment.yaml'
                     )
                 }
             }
