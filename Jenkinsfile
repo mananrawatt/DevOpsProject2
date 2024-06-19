@@ -57,11 +57,17 @@ pipeline {
         //             kubernetesDeploy(
         //             configs: 'k8s/deployment.yaml',
         //             kubeconfigId: 'kubeconfig'
-        stage('Deploy to Minikube') {
+        
+        // stage('Deploy to Minikube') {
+        //     steps {
+        //         script {
+        //             withKubeConfig([credentialsId: 'MINIKUBE_KUBECONFIG_CREDENTIALS']) {
+        //                 sh 'kubectl apply -f k8s/deployment.yaml'
+
+        stage('Deploy to Kubernetes') {
             steps {
-                script {
-                    withKubeConfig([credentialsId: 'MINIKUBE_KUBECONFIG_CREDENTIALS']) {
-                        sh 'kubectl apply -f k8s/deployment.yaml'
+                withKubeConfig([credentialsId: env.KUBECONFIG_CREDENTIAL_ID, serverUrl: 'https://127.0.0.1:52582']) {
+                    sh 'kubectl apply -f k8s/deployment.yaml'
                     }
                 }
             }
