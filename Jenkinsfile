@@ -68,7 +68,7 @@ pipeline {
             steps {
                 withKubeConfig([credentialsId: env.KUBECONFIG_CREDENTIAL_ID, serverUrl: 'https://127.0.0.1:52582']) {
                     sh 'kubectl apply -f k8s/deployment.yaml'
-                    }
+                    
                 }
             }
         }
