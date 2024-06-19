@@ -3,7 +3,10 @@ pipeline {
 
     environment {
 //      DOCKER_IMAGE = "mannanrawat/devops-automation:2.0"
-        DOCKER_IMAGE = "mannanrawat/devops-automation:${env.BUILD_ID.replaceAll('[^a-zA-Z0-9]', '_')}"
+        //DOCKER_IMAGE = "mannanrawat/devops-automation:${env.BUILD_ID.replaceAll('[^a-zA-Z0-9]', '_')}"
+        // Sanitize BUILD_ID to remove any characters that are not allowed in Docker image names
+        SANITIZED_BUILD_ID = env.BUILD_ID.replaceAll('[^a-zA-Z0-9]', '_')
+        DOCKER_IMAGE = "mannanrawat/devops-automation:${SANITIZED_BUILD_ID}"
 
         DOCKERHUB_USERNAME = "mananrawat788@gmail.com"
         DOCKERHUB_PASSWORD = "docker12@M"
@@ -32,8 +35,14 @@ pipeline {
                     sh "echo ${DOCKERHUB_PASSWORD} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin"
 
                     // Push the image
-                    docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push()
-                    docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push('latest')
+                    // docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push()
+                    // docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push('latest')
+
+                    // Push the image with the build ID tag
+                    docker.image(DOCKER_IMAGE).push()
+
+                    // Push the image with the 'latest' tag
+                    docker.image("mannanrawat/devops-automation:latest").push()
                     
                 }
             }
