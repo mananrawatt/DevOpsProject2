@@ -11,7 +11,8 @@ pipeline {
         DOCKERHUB_USERNAME = "mananrawat788@gmail.com"
         DOCKERHUB_PASSWORD = "docker12@M"
         
-        MINIKUBE_KUBECONFIG_CREDENTIALS = credentials('minikube-kubeconfig')
+        //MINIKUBE_KUBECONFIG_CREDENTIALS = credentials('minikube-kubeconfig')
+        MINIKUBE_KUBECONFIG_CREDENTIALS = 'minikube-kubeconfig'
     }
 
     stages {
