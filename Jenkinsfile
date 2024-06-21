@@ -27,7 +27,9 @@ pipeline {
             steps {
                 script {
                     //docker.build("${DOCKER_IMAGE}:${env.BUILD_ID}")
-                    docker.build(DOCKER_IMAGE)
+                    //docker.build(DOCKER_IMAGE)
+                    def dockerHome = tool name: "${env.dockerTool}"
+                    sh "${dockerHome}/docker build -t ${DOCKER_IMAGE} ."
                 }
             }
         }
