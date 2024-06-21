@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     environment {
-        dockerTool = 'Docker'
+        //dockerTool = 'Docker'
+        
 //      DOCKER_IMAGE = "mannanrawat/devops-automation:2.0"
         //DOCKER_IMAGE = "mannanrawat/devops-automation:${env.BUILD_ID.replaceAll('[^a-zA-Z0-9]', '_')}"
         // Sanitize BUILD_ID to remove any characters that are not allowed in Docker image names
@@ -28,8 +29,11 @@ pipeline {
                 script {
                     //docker.build("${DOCKER_IMAGE}:${env.BUILD_ID}")
                     //docker.build(DOCKER_IMAGE)
-                    def dockerHome = tool name: "${env.dockerTool}"
-                    sh "${dockerHome}/docker build -t ${DOCKER_IMAGE} ."
+                    // def dockerHome = tool name: "${env.dockerTool}"
+                    // sh "${dockerHome}/docker build -t ${DOCKER_IMAGE} ."
+
+                    // Build Docker image
+                    sh "docker build -t ${DOCKER_IMAGE} ."
                 }
             }
         }
@@ -38,7 +42,7 @@ pipeline {
             steps {
                 script {
                     // // Login to Docker Hub
-                    // sh "echo ${DOCKERHUB_PASSWORD} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin"
+                     sh "echo ${DOCKERHUB_PASSWORD} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin"
 
                     // // Push the image
                     // // docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push()
@@ -50,13 +54,22 @@ pipeline {
                     // // Push the image with the 'latest' tag
                     // docker.image("mannanrawat/devops-automation:latest").push()
                     
-                    // Login to Docker Hub
-                    sh "echo ${DOCKERHUB_PASSWORD} | ${dockerHome}/docker login -u ${DOCKERHUB_USERNAME} --password-stdin"
+                    // // Login to Docker Hub
+                    // sh "echo ${DOCKERHUB_PASSWORD} | ${dockerHome}/docker login -u ${DOCKERHUB_USERNAME} --password-stdin"
 
-                    // Push the image
-                    sh "${dockerHome}/docker push ${DOCKER_IMAGE}"
-                    sh "${dockerHome}/docker tag ${DOCKER_IMAGE} mannanrawat/devops-automation:latest"
-                    sh "${dockerHome}/docker push mannanrawat/devops-automation:latest"
+                    // // Push the image
+                    // sh "${dockerHome}/docker push ${DOCKER_IMAGE}"
+                    // sh "${dockerHome}/docker tag ${DOCKER_IMAGE} mannanrawat/devops-automation:latest"
+                    // sh "${dockerHome}/docker push mannanrawat/devops-automation:latest"
+
+
+
+                    // Push the image with build ID tag
+                    sh "docker push ${DOCKER_IMAGE}"
+
+                    // Optionally tag and push as 'latest'
+                    sh "docker tag ${DOCKER_IMAGE} mananrawat/devops-automation:latest"
+                    sh "docker push mananrawat/devops-automation:latest"
                     
                 }
             }
