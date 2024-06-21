@@ -18,7 +18,7 @@ pipeline {
 
     tools {
         // Ensure 'Docker' matches the name configured in Jenkins Global Tool Configuration
-        dockerTool 'Docker'
+        dockerTool 'DOCKER_HOME'
     }
 
     stages {
