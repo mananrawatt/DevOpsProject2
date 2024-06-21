@@ -17,6 +17,11 @@ pipeline {
         MINIKUBE_KUBECONFIG_CREDENTIALS = 'minikube-kubeconfig'
     }
 
+    tools {
+        // Ensure 'Docker' matches the name configured in Jenkins Global Tool Configuration
+        dockerTool 'Docker'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -28,12 +33,12 @@ pipeline {
             steps {
                 script {
                     //docker.build("${DOCKER_IMAGE}:${env.BUILD_ID}")
-                    //docker.build(DOCKER_IMAGE)
+                    docker.build(DOCKER_IMAGE)
                     // def dockerHome = tool name: "${env.dockerTool}"
                     // sh "${dockerHome}/docker build -t ${DOCKER_IMAGE} ."
 
                     // Build Docker image
-                    sh "docker build -t ${DOCKER_IMAGE} ."
+                    // sh "docker build -t ${DOCKER_IMAGE} ."
                 }
             }
         }
