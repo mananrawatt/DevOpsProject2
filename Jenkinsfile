@@ -37,18 +37,26 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
+                    // // Login to Docker Hub
+                    // sh "echo ${DOCKERHUB_PASSWORD} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin"
+
+                    // // Push the image
+                    // // docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push()
+                    // // docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push('latest')
+
+                    // // Push the image with the build ID tag
+                    // docker.image(DOCKER_IMAGE).push()
+
+                    // // Push the image with the 'latest' tag
+                    // docker.image("mannanrawat/devops-automation:latest").push()
+                    
                     // Login to Docker Hub
-                    sh "echo ${DOCKERHUB_PASSWORD} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin"
+                    sh "echo ${DOCKERHUB_PASSWORD} | ${dockerHome}/docker login -u ${DOCKERHUB_USERNAME} --password-stdin"
 
                     // Push the image
-                    // docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push()
-                    // docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push('latest')
-
-                    // Push the image with the build ID tag
-                    docker.image(DOCKER_IMAGE).push()
-
-                    // Push the image with the 'latest' tag
-                    docker.image("mannanrawat/devops-automation:latest").push()
+                    sh "${dockerHome}/docker push ${DOCKER_IMAGE}"
+                    sh "${dockerHome}/docker tag ${DOCKER_IMAGE} mannanrawat/devops-automation:latest"
+                    sh "${dockerHome}/docker push mannanrawat/devops-automation:latest"
                     
                 }
             }
@@ -79,7 +87,7 @@ pipeline {
         stage('Deploy to Minikube') {
             steps {
                 script {
-                    withKubeConfig([credentialsId: KUBECONFIG_CREDENTIAL_ID]) {
+                    withKubeConfig([credentialsId: K MINIKUBE_KUBECONFIG_CREDENTIALS]) {
                         sh 'kubectl apply -f k8s/deployment.yaml'
             }
         }
