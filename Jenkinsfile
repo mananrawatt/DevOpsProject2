@@ -109,32 +109,11 @@ pipeline {
         stage('Deploy to Minikube') {
             steps {
                 script {
-                    def kubeconfigContent = """
-                    apiVersion: v1
-                    clusters:
-                    - cluster:
-                        certificate-authority: /Users/mananrawat/.minikube/ca.crt
-                        server: https://192.168.49.2:8443  
-                      name: minikube
-                    contexts:
-                    - context:
-                        cluster: minikube
-                        user: minikube
-                      name: minikube
-                    current-context: minikube
-                    kind: Config
-                    preferences: {}
-                    users:
-                    - name: minikube
-                      user:
-                        client-certificate: /Users/mananrawat/.minikube/profiles/minikube/client.crt
-                        client-key: /Users/mananrawat/.minikube/profiles/minikube/client.key
-                    """
-
-                    writeFile file: 'kubeconfig', text: kubeconfigContent
+                    // Read kubeconfig content from file
+                    def kubeconfigContent = readFile('kubeconfig')
 
                     // Deploy to Minikube using kubeconfig file
-                    withKubeConfig([credentialsId: MINIKUBE_KUBECONFIG_CREDENTIALS, kubeconfigFile: 'kubeconfig']) {
+                    withKubeConfig([credentialsId: MINIKUBE_KUBECONFIG_CREDENTIALS, kubeconfigFile: kubeconfigContent]) {
                         sh 'kubectl apply -f k8s/deployment.yaml --validate=false'
                     }
                 }
