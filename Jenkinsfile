@@ -108,10 +108,10 @@ pipeline {
         stage('Deploy to Minikube') {
             steps {
                 script {
-                    withKubeConfig([credentialsId: MINIKUBE_KUBECONFIG_CREDENTIALS]) {
-                        sh 'kubectl config view'
-                        sh 'kubectl config current-context'
-                        sh 'kubectl get nodes'
+                      def kubeconfigFile = readFile('kubeconfig')
+
+                       // Deploy to Minikube using kubeconfig
+                        withKubeConfig([credentialsId: MINIKUBE_KUBECONFIG_CREDENTIALS, kubeconfigFile: kubeconfigFile]) {
                         sh 'kubectl apply -f k8s/deployment.yaml'
             }
         }
