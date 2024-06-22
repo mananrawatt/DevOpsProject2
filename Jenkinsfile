@@ -50,6 +50,7 @@ pipeline {
                 script {
                     // // Login to Docker Hub
                      sh "echo ${DOCKERHUB_PASSWORD} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin"
+                     sh "docker build -t ${DOCKER_IMAGE} ."
 
                     // // Push the image
                     // // docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push()
