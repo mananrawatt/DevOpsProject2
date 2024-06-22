@@ -75,9 +75,9 @@ pipeline {
                     // Push the image with build ID tag
                     sh "docker push ${DOCKER_IMAGE}"
 
-                    // Optionally tag and push as 'latest'
-                    sh "docker tag ${DOCKER_IMAGE} mananrawat/devops-automation:latest"
-                    sh "docker push mananrawat/devops-automation:latest"
+                    // // Optionally tag and push as 'latest'
+                    // sh "docker tag ${DOCKER_IMAGE} mananrawat/devops-automation:latest"
+                    // sh "docker push mananrawat/devops-automation:latest"
                     
                 }
             }
