@@ -109,6 +109,9 @@ pipeline {
             steps {
                 script {
                     withKubeConfig([credentialsId: MINIKUBE_KUBECONFIG_CREDENTIALS]) {
+                        sh 'kubectl config view'
+                        sh 'kubectl config current-context'
+                        sh 'kubectl get nodes'
                         sh 'kubectl apply -f k8s/deployment.yaml'
             }
         }
