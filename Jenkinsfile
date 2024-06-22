@@ -106,17 +106,42 @@ pipeline {
         // }
 
         stage('Deploy to Minikube') {
-            steps {
-                script {
-                      def kubeconfigFile = readFile('kubeconfig')
+    steps {
+        script {
+            // Define the content of kubeconfig file
+            def kubeconfigContent = """
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority: /Users/mananrawat/.minikube/ca.crt
+    server: https://192.168.49.2:52582  // Replace with your Minikube IP and port
+  name: minikube
+contexts:
+- context:
+    cluster: minikube
+    user: minikube
+  name: minikube
+current-context: minikube
+kind: Config
+preferences: {}
+users:
+- name: minikube
+  user:
+    client-certificate: /Users/mananrawat/.minikube/profiles/minikube/client.crt
+    client-key: /Users/mananrawat/.minikube/profiles/minikube/client.key
+"""
 
-                       // Deploy to Minikube using kubeconfig
-                        withKubeConfig([credentialsId: MINIKUBE_KUBECONFIG_CREDENTIALS, kubeconfigFile: kubeconfigFile]) {
-                        sh 'kubectl apply -f k8s/deployment.yaml'
+            // Write kubeconfig content to a file named kubeconfig
+            writeFile file: 'kubeconfig', text: kubeconfigContent
+
+            // Deploy to Minikube using kubeconfig file
+            withKubeConfig([credentialsId: MINIKUBE_KUBECONFIG_CREDENTIALS, kubeconfigFile: 'kubeconfig']) {
+                sh 'kubectl apply -f k8s/deployment.yaml'
             }
         }
     }
 }
+
 
 
         stage('Run Backup Script') {
