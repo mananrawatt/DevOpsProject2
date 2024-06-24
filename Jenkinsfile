@@ -174,6 +174,9 @@ pipeline {
     stages {
         stage('Setup') {
             steps {
+                 // Ensure Minikube binary is executable
+                sh "chmod +x ${MINIKUBE_BIN}"
+                
                 // Start Minikube (if not already running)
                 sh "${MINIKUBE_BIN} start --driver=docker"
                 
