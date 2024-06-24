@@ -16,6 +16,9 @@ pipeline {
         
         //MINIKUBE_KUBECONFIG_CREDENTIALS = credentials('minikube-kubeconfig')
         MINIKUBE_KUBECONFIG_CREDENTIALS = 'minikube-kubeconfig'
+
+        MINIKUBE_BIN = '/opt/homebrew/bin/minikube'
+        KUBECONFIG_FILE = 'kubeconfig'
     }
 
     tools {
@@ -27,6 +30,15 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+            }
+        }
+
+
+    stage('Setup') {
+            steps {
+                sh "chmod +x ${MINIKUBE_BIN}"
+                sh "${MINIKUBE_BIN} start --driver=docker"
+                sh "${MINIKUBE_BIN} kubectl config use-context minikube"
             }
         }
 
@@ -109,16 +121,20 @@ pipeline {
         stage('Deploy to Minikube') {
             steps {
                 script {
-                    // Read kubeconfig content from file
-                    def kubeconfigContent = readFile('kubeconfig')
-
-                    // Deploy to Minikube using kubeconfig file
-                    withKubeConfig([credentialsId: MINIKUBE_KUBECONFIG_CREDENTIALS, kubeconfigFile: kubeconfigContent]) {
-                        sh 'kubectl apply -f k8s/deployment.yaml --validate=false'
+                    def kubeconfigContent = readFile(KUBECONFIG_FILE)
+                    withKubeConfig(credentialsId: 'minikube-kubeconfig', kubeconfigFile: kubeconfigContent) {
+                        try {
+                            sh "kubectl apply -f k8s/deployment.yaml --validate=false"
+                        } catch (Exception e) {
+                            echo "Error deploying: ${e.message}"
+                            currentBuild.result = 'FAILURE'
+                            error("Deployment failed")
+                        }
                     }
                 }
             }
         }
+    }
     
 
 
