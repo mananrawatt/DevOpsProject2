@@ -121,10 +121,10 @@ pipeline {
         stage('Deploy to Minikube') {
             steps {
                 script {
-                    def kubeconfigContent = readFile(KUBECONFIG_FILE)
-                    withKubeConfig(credentialsId: 'minikube-kubeconfig', kubeconfigFile: kubeconfigContent) {
+                    withKubeConfig([credentialsId: 'minikube-kubeconfig']) {
                         try {
                             sh "kubectl apply -f k8s/deployment.yaml --validate=false"
+                            sh "kubectl apply -f k8s/service.yaml --validate=false"
                         } catch (Exception e) {
                             echo "Error deploying: ${e.message}"
                             currentBuild.result = 'FAILURE'
