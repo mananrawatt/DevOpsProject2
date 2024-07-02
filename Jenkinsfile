@@ -117,6 +117,25 @@ pipeline {
         //     }
         // }
 
+
+        stage('Deploy Trial Nginx Deployment to Minikube') {
+    steps {
+        script {
+            withKubeConfig([credentialsId: 'minikube-kubeconfig']) {
+                try {
+                    sh "kubectl apply -f k8s/nginx-deployment.yaml --validate=false"
+                    sh "kubectl apply -f k8s/nginx-service.yaml --validate=false"
+                } catch (Exception e) {
+                    echo "Error deploying: ${e.message}"
+                    currentBuild.result = 'FAILURE'
+                    error("Deployment failed")
+                }
+            }
+        }
+    }
+}
+
+
         
         stage('Deploy to Minikube') {
             steps {
