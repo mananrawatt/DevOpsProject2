@@ -15,6 +15,7 @@ spec:
     spec:
       containers:
       - name: devops-app
-        image: mannanrawat/devops-automation:latest
+        # image: mannanrawat/devops-automation:latest
+        image: mannanrawat/devops-automation:${SANITIZED_BUILD_ID}
         ports:
-        - containerPort: 80
+        - containerPort: 8501
