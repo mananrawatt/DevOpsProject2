@@ -8,6 +8,7 @@ spec:
     app: devops-app
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 80
+      port: 8501
+      targetPort: 8501
+      nodePort: 30001 
   type: LoadBalancer
