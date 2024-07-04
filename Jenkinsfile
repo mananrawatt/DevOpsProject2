@@ -141,7 +141,8 @@ pipeline {
         stage('Deploy to Minikube') {
             steps {
                 script {
-                    withKubeConfig([credentialsId: 'minikube-kubeconfig']) {
+                    env.KUBECONFIG = "${env.WORKSPACE}/${KUBECONFIG_FILE}"
+                    withEnv(["KUBECONFIG=${env.KUBECONFIG}"]) {
                         try {
                             sh "kubectl apply -f k8s/deployment.yaml --validate=false"
                             sh "kubectl apply -f k8s/service.yaml --validate=false"
