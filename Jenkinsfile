@@ -98,6 +98,24 @@ pipeline {
             }
         }
 
+        stage('Test Connectivity to Minikube') {
+            steps {
+                script {
+                    env.KUBECONFIG = "${env.WORKSPACE}/${KUBECONFIG_FILE}"
+                    withEnv(["KUBECONFIG=${env.KUBECONFIG}"]) {
+                        try {
+                            sh "kubectl cluster-info"
+                            sh "kubectl get nodes"
+                        } catch (Exception e) {
+                            echo "Error accessing Minikube: ${e.message}"
+                            currentBuild.result = 'FAILURE'
+                            error("Failed to connect to Minikube")
+                        }
+                    }
+                }
+            }
+        }
+
         // stage('Deploy to Kubernetes') {
         //     steps {
         //         script {
