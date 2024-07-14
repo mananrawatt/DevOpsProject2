@@ -18,4 +18,4 @@ spec:
         # image: mannanrawat/devops-automation:latest
         image: mannanrawat/devops-automation:${SANITIZED_BUILD_ID}
         ports:
-        - containerPort: 8501
+        - containerPort: 8080
