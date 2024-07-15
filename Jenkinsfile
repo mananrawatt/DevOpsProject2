@@ -17,7 +17,7 @@ pipeline {
         //MINIKUBE_KUBECONFIG_CREDENTIALS = credentials('minikube-kubeconfig')
         MINIKUBE_KUBECONFIG_CREDENTIALS = 'minikube-kubeconfig'
 
-        MINIKUBE_BIN = '/opt/homebrew/bin/minikube'
+        MINIKUBE_BIN = '/opt/homebrew/share/zsh/site-functions'
         KUBECONFIG_FILE = 'kubeconfig'
     }
 
