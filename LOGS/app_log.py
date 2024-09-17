@@ -3,7 +3,7 @@ import os
 
 # Function to set up logging
 def setup_logging():
-    log_dir = '/Users/mananrawat/Desktop/Project/UPDATED CODEE/DevOpsProject/LOGS'  # Log directory path
+    log_dir = '/Users/mananrawat/Desktop/Project/UPDATED CODEE/abv/DevOpsProject/LOGS'  # Log directory path
 
     # Create the 'LOGS' directory if it doesn't exist
     if not os.path.exists(log_dir):

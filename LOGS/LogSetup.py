@@ -56,7 +56,7 @@ import os
 
 def setup_logging():
     # Set the log directory path
-    log_dir = '/Users/mananrawat/Desktop/Project/UPDATED CODEE/DevOpsProject/LOGS'
+    log_dir = '/Users/mananrawat/Desktop/Project/UPDATED CODEE/abv/DevOpsProject/LOGS'
 
     # Create the 'LOGS' directory if it doesn't exist
     try:
