@@ -98,23 +98,23 @@ pipeline {
             }
         }
 
-        stage('Test Connectivity to Minikube') {
-            steps {
-                script {
-                    env.KUBECONFIG = "${env.WORKSPACE}/${KUBECONFIG_FILE}"
-                    withEnv(["KUBECONFIG=${env.KUBECONFIG}"]) {
-                        try {
-                            sh "kubectl cluster-info"
-                            sh "kubectl get nodes"
-                        } catch (Exception e) {
-                            echo "Error accessing Minikube: ${e.message}"
-                            currentBuild.result = 'FAILURE'
-                            error("Failed to connect to Minikube")
-                        }
-                    }
-                }
-            }
-        }
+        // stage('Test Connectivity to Minikube') {
+        //     steps {
+        //         script {
+        //             env.KUBECONFIG = "${env.WORKSPACE}/${KUBECONFIG_FILE}"
+        //             withEnv(["KUBECONFIG=${env.KUBECONFIG}"]) {
+        //                 try {
+        //                     sh "kubectl cluster-info"
+        //                     sh "kubectl get nodes"
+        //                 } catch (Exception e) {
+        //                     echo "Error accessing Minikube: ${e.message}"
+        //                     currentBuild.result = 'FAILURE'
+        //                     error("Failed to connect to Minikube")
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
         // stage('Deploy to Kubernetes') {
         //     steps {
@@ -156,20 +156,37 @@ pipeline {
         //     }
         // }
 
-        stage('Deploy to Minikube') {
+        // stage('Deploy to Minikube') {
+        //     steps {
+        //         script {
+        //             env.KUBECONFIG = "${env.WORKSPACE}/${KUBECONFIG_FILE}"
+        //             withEnv(["KUBECONFIG=${env.KUBECONFIG}"]) {
+        //                 try {
+        //                     sh "kubectl apply -f k8s/deployment.yaml --validate=false"
+        //                     sh "kubectl apply -f k8s/service.yaml --validate=false"
+        //                 } catch (Exception e) {
+        //                     echo "Error deploying: ${e.message}"
+        //                     currentBuild.result = 'FAILURE'
+        //                     error("Deployment failed")
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+
+        stage('Manual Approval for Deployment') {
+            steps {
+                input message: 'Do you want to deploy manually? Click Proceed to continue.', ok: 'Proceed'
+            }
+        }
+
+        stage('Manual Deployment') {
             steps {
                 script {
-                    env.KUBECONFIG = "${env.WORKSPACE}/${KUBECONFIG_FILE}"
-                    withEnv(["KUBECONFIG=${env.KUBECONFIG}"]) {
-                        try {
-                            sh "kubectl apply -f k8s/deployment.yaml --validate=false"
-                            sh "kubectl apply -f k8s/service.yaml --validate=false"
-                        } catch (Exception e) {
-                            echo "Error deploying: ${e.message}"
-                            currentBuild.result = 'FAILURE'
-                            error("Deployment failed")
-                        }
-                    }
+                    echo "Deploy the application manually at this point."
+                    echo "This can include any manual steps like copying files, running deployment scripts, etc."
+                    // Add instructions or shell commands here for manual deployment if necessary
+                    echo "Once manual deployment is done, you can continue."
                 }
             }
         }
