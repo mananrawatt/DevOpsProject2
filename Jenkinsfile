@@ -190,25 +190,7 @@ pipeline {
                 }
             }
         }
-    
-    
 
-
-        stage('Run Backup Script') {
-            steps {
-                script {
-                    sh './scripts/backup.sh'
-                }
-            }
-        }
-
-        stage('Run Cleanup Script') {
-            steps {
-                script {
-                    sh './scripts/cleanup.sh'
-                }
-            }
-        }
     }
 
     post {
